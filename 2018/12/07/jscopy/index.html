@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          对象的引用、浅拷贝、深拷贝 - Beantech | 豆科技
+        
+    </title>
+
+    <link rel="canonical" href="http://linyiwangteng.github.io/2018/12/07/jscopy/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('timg.jpeg')
+            /*post*/
+        
+    }
+    
+    #signature{
+        background-image: url('/img/signature/BeanTechSign-white.png');
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#js" title="js">js</a>
+                            
+                              <a class="tag" href="/tags/#copy" title="copy">copy</a>
+                            
+                        </div>
+                        <h1>对象的引用、浅拷贝、深拷贝</h1>
+                        <h2 class="subheading">关于对象拷贝问题</h2>
+                        <span class="meta">
+                            Posted by 王腾 on
+                            2018-12-07
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">随手笔记</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p> 在JS中，一般的=号传递的都是对象/数组的引用，并没有真正地拷贝一个对象，既不是浅拷贝更不是深拷贝。</p>
+<h2 id="一、对象引用、浅层拷贝与深层拷贝的区别"><a href="#一、对象引用、浅层拷贝与深层拷贝的区别" class="headerlink" title="一、对象引用、浅层拷贝与深层拷贝的区别"></a>一、对象引用、浅层拷贝与深层拷贝的区别</h2><h3 id="对象引用"><a href="#对象引用" class="headerlink" title="对象引用"></a>对象引用</h3><p> js的对象引用传递理解起来很简单，参考如下代码：</p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj1 = <span class="comment">&#123;name:'zhangsan'&#125;</span>;</span><br><span class="line"><span class="keyword">var</span> obj2 = obj1;</span><br><span class="line">obj1 === obj2  <span class="comment">//true</span></span><br><span class="line">obj1.<span class="keyword">name</span>   <span class="comment">// zhangsan</span></span><br><span class="line">obj2.<span class="keyword">name</span>   <span class="comment">// zhangsan</span></span><br></pre></td></tr></table></figure>
+<p>上述代码中，使用了=进行赋值，于是obj2指向了obj1所指向的栈的对象，也就是obj1与obj2指向了同一个栈对象，所以在对obj2.name赋值时，obj1.name也发生了变化。这个时候需要进行拷贝。</p>
+<hr>
+<h3 id="浅拷贝"><a href="#浅拷贝" class="headerlink" title="浅拷贝"></a>浅拷贝</h3><p>先上代码</p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj1 = <span class="comment">&#123;name: 'lisi'&#125;</span>;</span><br><span class="line"><span class="keyword">var</span> obj2 = <span class="keyword">Object</span>.assign(<span class="comment">&#123;&#125;</span>,obj1);</span><br><span class="line">a === b  <span class="comment">// false</span></span><br><span class="line">b.<span class="keyword">name</span> = <span class="string">'wangwu'</span></span><br><span class="line">a.<span class="keyword">name</span>   <span class="comment">//'lisi'</span></span><br></pre></td></tr></table></figure>
+<p>上面代码将原始对象拷贝到一个空对象，就得到了原始对象的克隆，这时候obj1与obj2指向的是不同的栈对象，所以对obj2.name重新复制也不会影响到obj1.name。<strong> 如果obj1中有属性值是对象的引用而不是一个字符串，那么上面的代码也会遇到一些问题。</strong></p>
+<hr>
+<h3 id="深拷贝"><a href="#深拷贝" class="headerlink" title="深拷贝"></a>深拷贝</h3><p>例如下边例子：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">var</span> <span class="selector-tag">a</span> = &#123;name:&#123;firstName:<span class="string">'wang'</span>,lastName:<span class="string">'er'</span>&#125;&#125;</span><br><span class="line"><span class="selector-tag">var</span> <span class="selector-tag">b</span> = Object.assign(&#123;&#125;, a)</span><br><span class="line">a===<span class="selector-tag">b</span> <span class="comment">// false</span></span><br><span class="line"><span class="selector-tag">b</span><span class="selector-class">.name</span><span class="selector-class">.firstName</span> = <span class="string">'zhang'</span></span><br><span class="line"><span class="selector-tag">a</span><span class="selector-class">.name</span><span class="selector-class">.firstName</span> <span class="comment">//'zhang'</span></span><br></pre></td></tr></table></figure>
+<p>b.name.firstName又影响到了a.name.firstName，这是因为<strong>Object.assign()方法只是浅层拷贝</strong>，a.name是一个栈对象的引用，赋值给b时，b.name也同样是这个栈对象的引用，很多时候，我们不想让这种事情发生，所以我们就需要用到对象的深拷贝。</p>
+<hr>
+<h2 id="二、使用JSON-parse（）与JSON-stringify（）对对象进行拷贝"><a href="#二、使用JSON-parse（）与JSON-stringify（）对对象进行拷贝" class="headerlink" title="二、使用JSON.parse（）与JSON.stringify（）对对象进行拷贝"></a>二、使用JSON.parse（）与JSON.stringify（）对对象进行拷贝</h2><p>通常情况下，我们可以使用JSON.parse()和JSON.stringify()实现深拷贝。</p>
+<pre><code>function clone(obj){
+    return JSON.parse(JSON.stringify(obj));
+}
+</code></pre><p>这种方法只适用于纯数据json对象的深度克隆，例如API获取的JSON数据需要进行再加工处理。在有些情况下，这中方法会有缺陷的。</p>
+<pre><code>var obj1 = {
+    str: &apos;this is a string&apos;,
+    num: 123,
+    bool: true,
+    func: function(){
+        console.log(&apos;function&apos;)
+    },
+    arr: [1,2,3],
+    date: new Date(),
+    rep: new RegExp(/.*?/),
+    obj: { a:1,b:2},
+    a:null,
+    b:undefined
+}
+var obj2 = clone(obj1)
+</code></pre><p><img src="/2018/12/07/jscopy/print1.png" alt="ceshi"></p>
+<p>我们发现，上述的方法会忽略值为function以及undefied的字段，而且对date类型和正则的支持也不太友好。</p>
+<p>更要紧的是，上述方法只能克隆原始对象自身的值，不能克隆它继承的值。</p>
+<pre><code>function Person (name) {
+    this.name = name
+}
+var me = new Person(&apos;wang&apos;)
+var newme = clone(me)
+me.constructor === Person // true
+newme.constructor === Person // false
+newme.constructor === Object // true
+</code></pre><p>我们发现，克隆的对象的构造函数已经变成了Object,而原来的对象的构造是Person。</p>
+<hr>
+<h2 id="三、目前没有发现bug的对象深拷贝方法"><a href="#三、目前没有发现bug的对象深拷贝方法" class="headerlink" title="三、目前没有发现bug的对象深拷贝方法"></a>三、目前没有发现bug的对象深拷贝方法</h2><pre><code>var clone = function(obj) {
+    if(obj == null) return null;
+    if(typeof obj !== &apos;object&apos;) return obj;
+    if(obj.constructor === Date) return new Date(obj);
+    if(obj.constructor === RegExp) return new RegExp(obj);
+    var newobj = new obj.constructor();
+    for(let key in obj) {
+        if(obj.hasOwnProperty(key)){
+            var val = obj[key];
+            newobj[key] = typeof val === &apos;object&apos; ? clone(val) :val;
+        }
+    }
+    return newobj;
+}
+</code></pre><p>这里有三点需要注意：<br>1、用new obj.constructor ()构造函数新建一个空的对象，而不是使用{}或者[],这样可以保持原形链的继承；<br>2、用obj.hasOwnProperty(key)来判断属性是否来自原型链上，因为for..in..也会遍历其原型链上的可枚举属性。<br>3、上面的函数用到<strong>递归算法</strong>，在函数有名字，而且名字以后也不会变的情况下，这样定义没有问题。但问题是这个函数的执行与函数名 factorial 紧紧耦合在了一起。为了消除这种紧密耦合的现象，需要使用 arguments.callee。 </p>
+<pre><code>var clone = function (obj) { 
+    if(obj === null) return null 
+    if(typeof obj !== &apos;object&apos;) return obj;
+    if(obj.constructor===Date) return new Date(obj); 
+    if(obj.constructor === RegExp) return new RegExp(obj);
+    var newObj = new obj.constructor ();  //保持继承链
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {   //不遍历其原型链上的属性
+            var val = obj[key];
+            newObj[key] = typeof val === &apos;object&apos; ? arguments.callee(val) : val; // 使用arguments.callee解除与函数名的耦合
+        }
+    }  
+    return newObj;  
+};
+</code></pre><p>以上就是对象进行深拷贝的方法。</p>
+<h2 id="四、借助jquery的extend进行深拷贝"><a href="#四、借助jquery的extend进行深拷贝" class="headerlink" title="四、借助jquery的extend进行深拷贝"></a>四、借助jquery的extend进行深拷贝</h2><p>$.extend( [deep ], target, object1 [, objectN ] )</p>
+<p>deep表示是否深拷贝，为true为深拷贝，为false，则为浅拷贝</p>
+<p>target Object类型 目标对象，其他对象的成员属性将被附加到该对象上。</p>
+<p>object1  objectN可选。 Object类型 第一个以及第N个被合并的对象。 </p>
+<pre><code>let a=[0,1,[2,3],4，5，6],
+b=$.extend(true,[],a);
+a[0]=1;
+a[2][0]=1;
+console.log(a,b);
+</code></pre><h2 id="五、利用数组的Array-prototype-forEach和其他一些ECMAScript-5中的Object-函数进行深靠背"><a href="#五、利用数组的Array-prototype-forEach和其他一些ECMAScript-5中的Object-函数进行深靠背" class="headerlink" title="五、利用数组的Array.prototype.forEach和其他一些ECMAScript 5中的Object.*函数进行深靠背"></a>五、利用数组的Array.prototype.forEach和其他一些ECMAScript 5中的Object.*函数进行深靠背</h2><pre><code>&lt;!-- 这里确定obj为对象 --&gt;
+var deepClone = function (o){
+var copy = Object.create( Object.getPrototypeOf(o) );
+var propNames = Object.getOwnPropertyNames(o);
+
+propNames.forEach(function(name){
+    if(Object.prototype.toString.call(o[name]) == &apos;[object Object]&apos;){ 
+        copy[name] = deepClone(o[name]);
+    }else{
+        var desc = Object.getOwnPropertyDescriptor(o, name);   
+        Object.defineProperty(copy, name, desc);        
+    }
+});
+
+return copy;
+</code></pre><p>  }</p>
+<p>对于深拷贝应该根据具体情况选择合适的方法进行处理。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/03/18/hexo-theme-beantech/" data-toggle="tooltip" data-placement="top" title="[Hexo] Theme BeanTech">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#一、对象引用、浅层拷贝与深层拷贝的区别"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">一、对象引用、浅层拷贝与深层拷贝的区别</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#对象引用"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">对象引用</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#浅拷贝"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">浅拷贝</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#深拷贝"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">深拷贝</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#二、使用JSON-parse（）与JSON-stringify（）对对象进行拷贝"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">二、使用JSON.parse（）与JSON.stringify（）对对象进行拷贝</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#三、目前没有发现bug的对象深拷贝方法"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">三、目前没有发现bug的对象深拷贝方法</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#四、借助jquery的extend进行深拷贝"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">四、借助jquery的extend进行深拷贝</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#五、利用数组的Array-prototype-forEach和其他一些ECMAScript-5中的Object-函数进行深靠背"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">五、利用数组的Array.prototype.forEach和其他一些ECMAScript 5中的Object.*函数进行深靠背</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#js" title="js">js</a>
+                        
+                          <a class="tag" href="/tags/#copy" title="copy">copy</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "your-disqus-ID";
+    var disqus_identifier = "http://linyiwangteng.github.io/2018/12/07/jscopy/";
+    var disqus_url = "http://linyiwangteng.github.io/2018/12/07/jscopy/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 王腾 2018 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> | 
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://linyiwangteng.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://linyiwangteng.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
