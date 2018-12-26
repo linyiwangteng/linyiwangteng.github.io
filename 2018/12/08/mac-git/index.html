@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          在mac上搭建git以及基本git基本使用 - Beantech | 豆科技
+        
+    </title>
+
+    <link rel="canonical" href="http://linyiwangteng.github.io/2018/12/08/mac-git/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('bg.jpg')
+            /*post*/
+        
+    }
+    
+    #signature{
+        background-image: url('/img/signature/BeanTechSign-white.png');
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#mac" title="mac">mac</a>
+                            
+                              <a class="tag" href="/tags/#git" title="git">git</a>
+                            
+                        </div>
+                        <h1>在mac上搭建git以及基本git基本使用</h1>
+                        <h2 class="subheading">记录自己在mac上搭建git的过程</h2>
+                        <span class="meta">
+                            Posted by 王腾 on
+                            2018-12-08
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">随手笔记</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">首页</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">关于</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">归档</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">标签</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>这次随手笔记注意记录在mac上搭建git环境，以及本地与远程的链接配置，并且再次熟悉一下git的基本概念和日常工作使用的基本操作。</p>
+<h3 id="git的基本介绍"><a href="#git的基本介绍" class="headerlink" title="git的基本介绍"></a>git的基本介绍</h3><h4 id="git概念"><a href="#git概念" class="headerlink" title="git概念"></a>git概念</h4><p>git是一个管理代码的工具，我们可以通过它把本地仓库的代码提交至远程仓库，可以随意切换到曾经修改过的某一版本，它可以将你的一份代码衍生成多个分支，每个分支都可以修改，而且可以将某一分支的改动合并到另一个分支，本地仓库同一时间只能对应某一远程仓库的分支。</p>
+<h4 id="涉及到的概念"><a href="#涉及到的概念" class="headerlink" title="涉及到的概念"></a>涉及到的概念</h4><p>1、远程仓库：服务端存放代码的地方，如github、码云，或公司的gitlab，本文以github为主<br>2、本地仓库：当前电脑中的仓库，会与远程仓库建立连接，可往远程仓库上传或下拉代码<br>3、密钥：本地仓库与远程仓库建立连接的钥匙，本地存放私钥，远程存放公钥，配对才能建立连接<br>4、远程分支：远程仓库可以创建多个分支（默认只有一个master分支），多个分支可以随意切换、各自修改<br>5、本地分支：本地仓库也可以创建多个分支（默认只有一个master分支），本地分支一般会与一个远程分支关联，当然可以切换</p>
+<h4 id="使用流程"><a href="#使用流程" class="headerlink" title="使用流程"></a>使用流程</h4><p>为便于理解，粗略介绍一般使用流程，后面会详细介绍各个步骤和其他使用场景<br>1、下载安装并配置git环境<br>2、生成密钥对：一个公钥，一个私钥<br>3、创建一个远程仓库，如在github上注册账号，并创建一个仓库，上传公钥<br>4、在本地克隆一份远程仓库，作为本地仓库<br>5、本地仓库作改动，然后提交至远程仓库</p>
+<hr>
+<h3 id="Git下载以及安装"><a href="#Git下载以及安装" class="headerlink" title="Git下载以及安装"></a>Git下载以及安装</h3><p>点击<a href="https://git-scm.com/download" target="_blank" rel="noopener">Git</a>，然后选择下载安装包<br>Mac下是不需要主动配置环境变量的（系统已经默认配置），所以可以直接通过以下命令来查看版本号</p>
+<pre><code>git version
+</code></pre><p>如图所示安装成功<br><img src="/2018/12/08/mac-git/print1.png" alt="print1"></p>
+<p>若提示</p>
+<pre><code>xcode-select: note: no developer tools were found at &apos;/Applications/Xcode.app&apos;, requesting install.
+Choose an option in the dialog to download the command line developer tools   
+</code></pre><p>或者</p>
+<pre><code> xcrun: error: active developer path (&quot;/Applications/Xcode.app/Contents/Developer&quot;) does not exist, 
+use `xcode-select --switch path/to/Xcode.app` to specify the Xcode that you wish to use for command 
+line developer tools (or see `man xcode-select`)
+</code></pre><p>说明你的mac没有安装 xcode，一般用户也不需要去官网下载全部xcode环境，使用以下命令部分安装即可</p>
+<pre><code>xcode-select --install // 点击安装，单独安装CommandLineTools   
+sudo xcode-select --switch /Library/Developer/CommandLineTools
+</code></pre><p>安装后再次执行上述查看version命令，正常显示说明安装完成</p>
+<hr>
+<h3 id="Git的基本配置"><a href="#Git的基本配置" class="headerlink" title="Git的基本配置"></a>Git的基本配置</h3><p>查看当前git的config的配置<br>        git config –list<br>通过以下指令配置用户名和邮箱，git提交时会需要这些信息<br>        git config –global user.name “你的名字”<br>        git config –global user.email “你的邮箱”<br>        git config core.ignorecase false // 本地仓库文件是否大小写敏感，建议配置（不配置也没关系）<br>到此，git环境已经安装配置完成。很简单。</p>
+<hr>
+<h3 id="生成密钥并关联仓库（关键）"><a href="#生成密钥并关联仓库（关键）" class="headerlink" title="生成密钥并关联仓库（关键）"></a>生成密钥并关联仓库（关键）</h3><h4 id="1、先查看本地是否有密钥对，有的话就不需要创建了，如果是第一创建的话肯定是没有的，打开终端，执行下边命令："><a href="#1、先查看本地是否有密钥对，有的话就不需要创建了，如果是第一创建的话肯定是没有的，打开终端，执行下边命令：" class="headerlink" title="1、先查看本地是否有密钥对，有的话就不需要创建了，如果是第一创建的话肯定是没有的，打开终端，执行下边命令："></a>1、先查看本地是否有密钥对，有的话就不需要创建了，如果是第一创建的话肯定是没有的，打开终端，执行下边命令：</h4><pre><code>cd ~/.ssh 
+</code></pre><p>密钥生成后会存放在.ssh文件下，若此文件存在并ls后显示如下内容，说明你创建过，直接关联仓库即可，否则继续生成<br><img src="/2018/12/08/mac-git/print2.png" alt="print2"></p>
+<h4 id="2、通过以下命令生成密钥对"><a href="#2、通过以下命令生成密钥对" class="headerlink" title="2、通过以下命令生成密钥对"></a>2、通过以下命令生成密钥对</h4><pre><code>ssh-keygen -t rsa -C &quot;your_email@youremail.com&quot; // 这里是你自己的邮箱啊亲！不敢太实在了
+</code></pre><p>创建过程中，会询问你密钥存储位置，直接enter就好，会让你设置密码，可直接enter，也可输入密码（输密码时是不显示输入进度的，直接按键盘就好了，别傻傻的等），最后显示一个矩形方框就说明创建成功了</p>
+<h4 id="3、上传密钥"><a href="#3、上传密钥" class="headerlink" title="3、上传密钥"></a>3、上传密钥</h4><p>私钥就存在本地即可，公钥需要上传至远程仓库，这样才能让本地仓库和远程仓库建立连接；同步骤1，cd到.ssh文件，ls出上述三个文件，然后复制公钥id_rsa.pub内容，如下<br><img src="/2018/12/08/mac-git/print3.png" alt="print3"></p>
+<p>复制上述四行公钥，上传至github：登录账号、点击头像、选择Settings、选择SSH and GPG keys，然后new一个ssh key，名称自动生产一般为自己邮箱账号，可以自己修改。</p>
+<h4 id="4、建立本地仓库"><a href="#4、建立本地仓库" class="headerlink" title="4、建立本地仓库"></a>4、建立本地仓库</h4><p>远程仓库创建好之后，复制仓库地址，然后在本地克隆一个(若你设置过密码，会要求你输入密码，输入即可)，如下</p>
+<pre><code>git clone git@github.com:YourCount/GitTest.git // clone后面的连接替换成你自己的
+</code></pre><p><strong>至此，本地仓库和远程仓库都已创建好并建立连接，我们可以使用git来管理代码了。</strong></p>
+<hr>
+<h3 id="Git的基本使用（老生常谈，可以忽略）"><a href="#Git的基本使用（老生常谈，可以忽略）" class="headerlink" title="Git的基本使用（老生常谈，可以忽略）"></a>Git的基本使用（老生常谈，可以忽略）</h3><h4 id="查看分支"><a href="#查看分支" class="headerlink" title="查看分支"></a>查看分支</h4><p>我们通常会关心：本地有哪些分支、远端有哪些分支、本地分支目前与哪个远端分支有关联等，大家在查看时可能发现自己的远程和本地都只有一个分支，这个没有关系，等看完创建分支再回来试用即可</p>
+<p><strong>查看本地分支</strong></p>
+<pre><code>git branch
+</code></pre><p>执行上述命令后，在我本地显示如下，说明我本地有4个分支，当前代码所属的分支是master分支<br>        *master<br>        v1<br>        v2<br>        v3</p>
+<p><strong>查看所有分支</strong></p>
+<pre><code>git branch -a
+</code></pre><p>执行上述命令后，我本地显示如下，说明我共有3个分支，2个远程分支，1个本地分支</p>
+<pre><code>* master
+remotes/origin/HEAD -&gt; origin/master
+remotes/origin/master
+</code></pre><p><strong>查看所有分支及其最近一条提交记录</strong></p>
+<pre><code>git branch -av
+</code></pre><p>执行上述命令后</p>
+<pre><code>* master                40d88f3 add rules
+remotes/origin/HEAD   -&gt; origin/master
+remotes/origin/master 40d88f3 add rules
+</code></pre><p><strong>查看本地分支与远程关联分支</strong></p>
+<pre><code>git branch -avv
+</code></pre><p>执行上述命令后</p>
+<pre><code>* master                40d88f3 [origin/master] add rules
+remotes/origin/HEAD   -&gt; origin/master
+remotes/origin/master 40d88f3 add rules
+</code></pre><p>查看远程分支的直接关系</p>
+<pre><code>git remote show origin
+</code></pre><p>执行上述命令如下：</p>
+<pre><code>* remote origin
+Fetch URL: git@github.com:xxxx/GitTest.git
+Push  URL: git@github.com:xxxx/GitTest.git
+HEAD branch: master
+Remote branches:
+master          tracked
+remote_branch_1 tracked
+Local branches configured for &apos;git pull&apos;:
+master merges with remote master
+v4     merges with remote master
+Local ref configured for &apos;git push&apos;:
+master pushes to master (up to date)
+</code></pre><h4 id="提交代码到本地仓库"><a href="#提交代码到本地仓库" class="headerlink" title="提交代码到本地仓库"></a>提交代码到本地仓库</h4><p>本地仓库和远程仓库一样，也有分支啊、版本啊的概念。所以你本地修改了代码，需要先commit到本地仓库，然后才将commit记录push到远程仓库，这里我们先说怎么commit到本地仓库</p>
+<p><strong>查看本地仓库状态</strong><br>执行以下命令（注意，这些命令需要在本地仓库的根目录执行，后面的也是）</p>
+<pre><code>git status
+</code></pre><p>若显示如下内容，说明你的本地分支是master，而且没有改动，所以没什么可提交的，此时执行git diff也是什么都没有</p>
+<pre><code>On branch master
+Your branch is up to date with &apos;origin/master&apos;.
+
+nothing to commit, working tree clean
+</code></pre><p>若显示如下内容，说明你的本地分支是master，并且修改了”a“文件，而且没有暂存（所有改动暂存后才能提交），此时通过git diff就可以查看你改动的内容</p>
+<pre><code>Your branch is up to date with &apos;origin/master&apos;.
+
+Changes not staged for commit:
+(use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
+(use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)
+
+modified:   a
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
+</code></pre><p><strong>提交修改</strong></p>
+<p>未暂存的文件是不能提交的，所以我们需要先把改动暂存。暂存可以执行如下两条命令</p>
+<pre><code>git add a // 只暂存a文件，如果当本修改了好多文件但你只想提交一个，可以使用这个命令
+git add . // 暂存全部文件
+</code></pre><p>可以试验一下，暂存后再通过git status查看状态，结果是不一样的<br>执行如下命令，提交本次改动</p>
+<pre><code>git commit -m &quot;本次修改描述信息&quot;
+</code></pre><p>后面的描述信息是提交时一般要备注的，提交时没必要加双引号。当然，若你有复杂的提交信息，可以通过以下命令，在vim里操作，执行后跟普通的vim操作一样了</p>
+<pre><code>git commit -s
+</code></pre><p>到此，我们本地仓库已经提交完成，可以通过以下命令来查询本地提交记录</p>
+<pre><code>git log
+</code></pre><p>我这里显示如下结果</p>
+<pre><code>commit af1a469deacd3092bb994458131ae82d5babf7ca (HEAD -&gt; master)
+Author: xxxxx &lt;xxxxx@xxx.com&gt;
+Date:   Sat May 12 23:32:55 2018 +0800
+
+    测试comit vim下的操作
+
+commit 3e79c58a6722ca56687ce30b33e3be5c0aebeaeb
+Author: xxxxx &lt;xxxxx@xxx.com&gt;
+Date:   Sat May 12 23:29:36 2018 +0800
+
+    测试commit操作
+
+commit 99c36ffaafadae131ea81bt6fb90a199b365f6c9 (origin/master)
+Author: xxxxx &lt;xxxxx@xxx.com&gt;
+Date:   Fri May 11 01:36:08 2018 +0800
+
+    添加一个文件
+</code></pre><p>简单分析下，我这里列了三条记录，第三条是我之前创建文件并push到远程仓库了（当然所有log的Author信息我改了下），所以我们看到第三条括号了写的是(origin/master)表明已经推送到远程仓库了；前两条是我刚刚commit到本地的，所以显示(HEAD -&gt; master)，我们现在需要做的就是将本地仓库的代码push到远程仓库</p>
+<h4 id="提交代码到远程仓库"><a href="#提交代码到远程仓库" class="headerlink" title="提交代码到远程仓库"></a>提交代码到远程仓库</h4><p>提交代码前，建议先下拉代码并rebase。因为我们的一份代码，可能多人同时修改，当多人同时修改一处代码时会产生分叉合并，所以为了保证分支记录纯净（只有一条线），我们提交时先把被人提交的pull并rebase一下然后提交自己的，所以执行如下命令</p>
+<pre><code>git pull --rebase // push前先下拉并rebase代码
+git push origin Head:master // 提交代码到远程master分支
+git push // 也可以直接这样提交，前提是当前分支与远程分支有关联（当然和上面二选一）
+</code></pre><h4 id="下拉代码到本地仓库"><a href="#下拉代码到本地仓库" class="headerlink" title="下拉代码到本地仓库"></a>下拉代码到本地仓库</h4><p>当远程仓库有改动时，我们需要将最新代码下拉至本地仓库</p>
+<pre><code>git pull --rebase
+</code></pre><h4 id="管理分支"><a href="#管理分支" class="headerlink" title="管理分支"></a>管理分支</h4><h5 id="创建本地分支"><a href="#创建本地分支" class="headerlink" title="创建本地分支"></a><strong>创建本地分支</strong></h5><pre><code>git checkout -b v2 // 创建新分支v2，并将当前分支切换为v2
+</code></pre><h5 id="切换分支"><a href="#切换分支" class="headerlink" title="切换分支"></a><strong>切换分支</strong></h5><pre><code>git checkout v1 // 从当前分支切换为v1
+</code></pre><h5 id="创建远端分支"><a href="#创建远端分支" class="headerlink" title="创建远端分支"></a><strong>创建远端分支</strong></h5><pre><code>git push origin v1:remote_branch_v1 
+// 以本地分支v1为基准，创建远程分支remote_branch_v1，中间&quot;：&quot;两边不要有空格
+</code></pre><h5 id="删除远程分支"><a href="#删除远程分支" class="headerlink" title="删除远程分支"></a><strong>删除远程分支</strong></h5><pre><code>git push origin :remote_branch_v1 // push一个空的分支覆盖掉远端分支，就是删除
+</code></pre><h5 id="从远端拉取分支到本地，并建立关系"><a href="#从远端拉取分支到本地，并建立关系" class="headerlink" title="从远端拉取分支到本地，并建立关系"></a><strong>从远端拉取分支到本地，并建立关系</strong></h5><pre><code>git checkout -b v4 origin/master // v4本地原来不存在，master远端原来存在
+</code></pre><p>例如远程仓库里有个分支v4,我本地没有该分支，我要把v4拉到我本地：<br>若成功，将会在本地创建新分支v4,并自动切到v4上。<br>如果出现提示：</p>
+<pre><code>fatal: Cannot update paths and switch to branch &apos;dev2&apos; at the same time.
+Did you intend to checkout &apos;origin/dev2&apos; which can not be resolved as commit?
+</code></pre><p>表示拉取不成功。上面的我需要先执行</p>
+<pre><code>git fetch
+</code></pre><p>然后再执行</p>
+<pre><code>git checkout -b 本地分支名 origin/远程分支名
+</code></pre><p>其实这里就是我上面描述的，不用fetch,直接 git pull origin v4:v4 一个命令可以达到同等效果.</p>
+<h5 id="直接推送代码到关联的远程分支"><a href="#直接推送代码到关联的远程分支" class="headerlink" title="直接推送代码到关联的远程分支"></a><strong>直接推送代码到关联的远程分支</strong></h5><p>有时候我们直接通过git push来推送代码时，发现它提示如下</p>
+<pre><code>fatal: The upstream branch of your current branch does not match
+the name of your current branch.  To push to the upstream branch
+on the remote, use
+
+    git push origin HEAD:remote_branch_v1
+
+To push to the branch of the same name on the remote, use
+
+    git push origin local_v1
+</code></pre><p>这时候我们执行如下命令，就可以将直接通过git push将代码推送到与本地分支关联的远程分支了</p>
+<pre><code>git config --global push.default upstream
+</code></pre><h5 id="获取远程服务器上指定分支"><a href="#获取远程服务器上指定分支" class="headerlink" title="获取远程服务器上指定分支"></a>获取远程服务器上指定分支</h5><p>git pull 操作就可以从远程库中获取某个分支的更新，再与本地指定的分支进行自动merge(即使本地不存在这个分支)</p>
+<pre><code>git pull &lt;远程库名&gt; &lt;远程分支&gt;:&lt;本地分支&gt;
+git pull origin  v2:v2
+git pull  //是从远程库origin/master获取更新本地当前的分支
+</code></pre><p><strong>撤销操作</strong></p>
+<pre><code>git checkout . // 代码改动后，撤销所有改动
+git reset a // git add a 后，撤销对a的add
+git reset . // git add . 后，撤销add所有
+git reset HEAD~1 // 已经commit，在当前分支回退1条commit，当然2就是2条;回退后修改内容还在本地
+git revert HEAD~1 //已经push，回滚这条记录，需要注意的是执行完后需要继续执行以下三行才可以，因为远端会保留revert记录
+    git add .
+    git commit -a
+    git push
+</code></pre><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p> 至此，git的基本使用已经讲完了，了解完这些应该够应付平时的学习工作了。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/12/11/getBoundingClientRect/" data-toggle="tooltip" data-placement="top" title="getBoundingClientRect">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/12/07/jscopy/" data-toggle="tooltip" data-placement="top" title="对象的引用、浅拷贝、深拷贝">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#前言"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">前言</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#git的基本介绍"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">git的基本介绍</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#git概念"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">git概念</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#涉及到的概念"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">涉及到的概念</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#使用流程"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">使用流程</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Git下载以及安装"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Git下载以及安装</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Git的基本配置"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Git的基本配置</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#生成密钥并关联仓库（关键）"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">生成密钥并关联仓库（关键）</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1、先查看本地是否有密钥对，有的话就不需要创建了，如果是第一创建的话肯定是没有的，打开终端，执行下边命令："><span class="toc-nav-number">5.1.</span> <span class="toc-nav-text">1、先查看本地是否有密钥对，有的话就不需要创建了，如果是第一创建的话肯定是没有的，打开终端，执行下边命令：</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2、通过以下命令生成密钥对"><span class="toc-nav-number">5.2.</span> <span class="toc-nav-text">2、通过以下命令生成密钥对</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#3、上传密钥"><span class="toc-nav-number">5.3.</span> <span class="toc-nav-text">3、上传密钥</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4、建立本地仓库"><span class="toc-nav-number">5.4.</span> <span class="toc-nav-text">4、建立本地仓库</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Git的基本使用（老生常谈，可以忽略）"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">Git的基本使用（老生常谈，可以忽略）</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#查看分支"><span class="toc-nav-number">6.1.</span> <span class="toc-nav-text">查看分支</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#提交代码到本地仓库"><span class="toc-nav-number">6.2.</span> <span class="toc-nav-text">提交代码到本地仓库</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#提交代码到远程仓库"><span class="toc-nav-number">6.3.</span> <span class="toc-nav-text">提交代码到远程仓库</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#下拉代码到本地仓库"><span class="toc-nav-number">6.4.</span> <span class="toc-nav-text">下拉代码到本地仓库</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#管理分支"><span class="toc-nav-number">6.5.</span> <span class="toc-nav-text">管理分支</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#创建本地分支"><span class="toc-nav-number">6.5.1.</span> <span class="toc-nav-text">创建本地分支</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#切换分支"><span class="toc-nav-number">6.5.2.</span> <span class="toc-nav-text">切换分支</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#创建远端分支"><span class="toc-nav-number">6.5.3.</span> <span class="toc-nav-text">创建远端分支</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#删除远程分支"><span class="toc-nav-number">6.5.4.</span> <span class="toc-nav-text">删除远程分支</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#从远端拉取分支到本地，并建立关系"><span class="toc-nav-number">6.5.5.</span> <span class="toc-nav-text">从远端拉取分支到本地，并建立关系</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#直接推送代码到关联的远程分支"><span class="toc-nav-number">6.5.6.</span> <span class="toc-nav-text">直接推送代码到关联的远程分支</span></a></li><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#获取远程服务器上指定分支"><span class="toc-nav-number">6.5.7.</span> <span class="toc-nav-text">获取远程服务器上指定分支</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#总结"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">总结</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#mac" title="mac">mac</a>
+                        
+                          <a class="tag" href="/tags/#git" title="git">git</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "your-disqus-ID";
+    var disqus_identifier = "http://linyiwangteng.github.io/2018/12/08/mac-git/";
+    var disqus_url = "http://linyiwangteng.github.io/2018/12/08/mac-git/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 王腾 2018 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> | 
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://linyiwangteng.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://linyiwangteng.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          归档 - Beantech | 豆科技
+          getBoundingClientRect - Beantech | 豆科技
         
     </title>
 
-    <link rel="canonical" href="http://linyiwangteng.github.io/archive/">
+    <link rel="canonical" href="http://linyiwangteng.github.io/2018/12/11/getBoundingClientRect/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -69,8 +69,8 @@
 <style type="text/css">
     header.intro-header{
         
-            background-image: url('/img/header_img/archive-bg.png')
-            /*page*/
+            background-image: url('bg.jpg')
+            /*post*/
         
     }
     
@@ -87,10 +87,18 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 
-                    <div class="site-heading">
-                        <h1>归档</h1>
-                        <!--<hr class="small">-->
-                        <span class="subheading">写作归档</span>
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#javascript" title="javascript">javascript</a>
+                            
+                        </div>
+                        <h1>getBoundingClientRect</h1>
+                        <h2 class="subheading">获取某个元素相对于始创的位置集合，集合中有top，right，bottom，left等属性</h2>
+                        <span class="meta">
+                            Posted by 王腾 on
+                            2018-12-11
+                        </span>
                     </div>
                 
 
@@ -193,110 +201,119 @@
 
 
     <!-- Main Content -->
-    <!-- Main Content -->
-<div class="container">
-    <div class="row">
-        
-<!-- NO SIDEBAR -->
-    <!-- Post Container -->
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 post-container">
-                
-<!-- Main Content -->
-<div class="container">
-    <div class="row">
-        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-            <!-- 归档列表 -->
-            
-            
+    <!-- Modify by Yu-Hsuan Yen -->
 
-             <!-- 归档列表 -->
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
 
-            
-            <div class="one-tag-list">
-                <span class="fa fa-calendar-times-o listing-seperator" id="2018">
-                    <span class="tag-text">2018</span>
-                </span>
-                <ul>
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>getBoundingClientRect 用于获取某个元素相对于视窗的位置集合。集合中有top，right，bottom，left等集合。</p>
+<h4 id="1-语法："><a href="#1-语法：" class="headerlink" title="1.语法："></a>1.语法：</h4><pre><code>rectObject = object.getBoundingClientRect()
+</code></pre><h4 id="2-返回值类型："><a href="#2-返回值类型：" class="headerlink" title="2.返回值类型："></a>2.返回值类型：</h4><p>TEXTRectangle对象，每个矩形具有四个整数性质（上、右、下和左）表示的坐标的矩形，以像素为单位。</p>
+<p>rectObject.top：元素上边到视窗上边的距离;</p>
+<p>　rectObject.right：元素右边到视窗左边的距离;</p>
+<p>　rectObject.bottom：元素下边到视窗上边的距离;</p>
+<p>　rectObject.left：元素左边到视窗左边的距离;</p>
+<p>示图：<br>![示图]（shili.jpg）</p>
+<h4 id="3-兼容性"><a href="#3-兼容性" class="headerlink" title="3.兼容性"></a>3.兼容性</h4><p>兼容性：我用ie11的Document Mode模式测试，ie5以上都能支持。</p>
+<p>pc端：<br><img src="/2018/12/11/getBoundingClientRect/jianrong-pc.png" alt="pc"></p>
+<p>mobile端<br><img src="/2018/12/11/getBoundingClientRect/jianrong-mobile.png" alt="mobile"></p>
+<pre><code>function getRect(el){
+    if(el instanceof window.SVGElement) {
+        let rect = el.getBoundingClientRect()
+        return {
+            top: rect.top,
+            left: rect.left,
+            width: rect.width,
+            height:rect.height
+        }
+    }else{
+        return {
+            top: el.offsetTop,
+            left: el.offsetleft,
+            width: el.offsetWidth,
+            height: el.offsetHeight
+        }
+    }
+}
+</code></pre><h4 id="JS中的offsetWidth、offsetHeight、clientWidth、clientHeight等等的详细介绍"><a href="#JS中的offsetWidth、offsetHeight、clientWidth、clientHeight等等的详细介绍" class="headerlink" title="JS中的offsetWidth、offsetHeight、clientWidth、clientHeight等等的详细介绍"></a>JS中的offsetWidth、offsetHeight、clientWidth、clientHeight等等的详细介绍</h4><p>javascript中offsetWidth、clientWidth、width、scrollWidth、clientX、screenX、offsetX、pageX</p>
+<p>原文：<a href="https://www.cnblogs.com/ifworld/p/7605954.html" target="_blank" rel="noopener">https://www.cnblogs.com/ifworld/p/7605954.html</a><br>offsetWidth       //返回元素的宽度（包括元素宽度、内边距和边框，不包括外边距）</p>
+<p>offsetHeight      //返回元素的高度（包括元素高度、内边距和边框，不包括外边距）</p>
+<p>clientWidth        //返回元素的宽度（包括元素宽度、内边距，不包括边框和外边距）</p>
+<p>clientHeight       //返回元素的高度（包括元素高度、内边距，不包括边框和外边距）</p>
+<p>style.width         //返回元素的宽度（包括元素宽度，不包括内边距、边框和外边距）</p>
+<p>style.height       //返回元素的高度（包括元素高度，不包括内边距、边框和外边距）</p>
+<p>scrollWidth       //返回元素的宽度（包括元素宽度、内边距和溢出尺寸，不包括边框和外边距），无溢出的情况，与clientWidth相同</p>
+<p>scrollHeigh       //返回元素的高度（包括元素高度、内边距和溢出尺寸，不包括边框和外边距），无溢出的情况，与clientHeight相同</p>
+<ol>
+<li><p>style.width 返回的是字符串，如28px，offsetWidth返回的是数值28；</p>
+</li>
+<li><p>style.width/style.height与scrollWidth/scrollHeight是可读写的属性，clientWidth/clientHeight与offsetWidth/offsetHeight是只读属性</p>
+</li>
+<li><p>style.width的值需要事先定义，否则取到的值为空。而且必须要定义在html里(内联样式)，如果定义在css里，style.height的值仍然为空，但元素偏移有效；而offsetWidth则仍能取到。</p>
+</li>
+</ol>
+<p>//———————————————————————————————–</p>
+<p>offsetTop    //返回元素的上外缘距离最近采用定位父元素内壁的距离，如果父元素中没有采用定位的，则是获取上外边缘距离文档内壁的距离。</p>
+<p>所谓的定位就是position属性值为relative、absolute或者fixed。返回值是一个整数，单位是像素。此属性是只读的。</p>
+<p>offsetLeft       //此属性和offsetTop的原理是一样的，只不过方位不同，这里就不多介绍了。</p>
+<p>scrollLeft        //此属性可以获取或者设置对象的最左边到对象在当前窗口显示的范围内的左边的距离，也就是元素被滚动条向左拉动的距离。</p>
+<p>返回值是一个整数，单位是像素。此属性是可读写的。</p>
+<p>scrollTop   //此属性可以获取或者设置对象的最顶部到对象在当前窗口显示的范围内的顶边的距离，也就是元素滚动条被向下拉动的距离。</p>
+<p>返回值是一个整数，单位是像素。此属性是可读写的。</p>
+<p>//————————————————————————————————-</p>
+<p>当鼠标事件发生时（不管是onclick，还是omousemove，onmouseover等）</p>
+<p>clientX        鼠标相对于浏览器（这里说的是浏览器的有效区域）左上角x轴的坐标；  不随滚动条滚动而改变；</p>
+<p>clientY        鼠标相对于浏览器（这里说的是浏览器的有效区域）左上角y轴的坐标；  不随滚动条滚动而改变；</p>
+<p>pageX        鼠标相对于浏览器（这里说的是浏览器的有效区域）左上角x轴的坐标；  随滚动条滚动而改变；</p>
+<p>pageY        鼠标相对于浏览器（这里说的是浏览器的有效区域）左上角y轴的坐标；  随滚动条滚动而改变；</p>
+<p>screenX     鼠标相对于显示器屏幕左上角x轴的坐标；  </p>
+<p>screenY      鼠标相对于显示器屏幕左上角y轴的坐标；  </p>
+<p>offsetX        鼠标相对于事件源左上角X轴的坐标</p>
+<p>offsetY        鼠标相对于事件源左上角Y轴的坐标</p>
+
                 
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <li>
-                    12-11
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    <a href="/2018/12/11/getBoundingClientRect/" style="color: #0085a1">
-                        <span>
-                            getBoundingClientRect
-                        </span>
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </li>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <li>
-                    12-08
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    <a href="/2018/12/08/mac-git/" style="color: #0085a1">
-                        <span>
-                            在mac上搭建git以及基本git基本使用
-                        </span>
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </li>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <li>
-                    12-07
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    <a href="/2018/12/07/jscopy/" style="color: #0085a1">
-                        <span>
-                            对象的引用、浅拷贝、深拷贝
-                        </span>
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </li>
-                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/12/08/mac-git/" data-toggle="tooltip" data-placement="top" title="在mac上搭建git以及基本git基本使用">Next Post &rarr;</a>
+                        </li>
+                    
                 </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
             </div>
             
-            <div class="one-tag-list">
-                <span class="fa fa-calendar-times-o listing-seperator" id="2017">
-                    <span class="tag-text">2017</span>
-                </span>
-                <ul>
-                
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <li>
-                    03-18
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    <a href="/2017/03/18/hexo-theme-beantech/" style="color: #0085a1">
-                        <span>
-                            [Hexo] Theme BeanTech
-                        </span>
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </li>
-                
-                </ul>
-            </div>
-            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
 
-
-        </div>
-    </div>
-</div>
-            </div>
-    <!-- Sidebar Container -->
+                
+            <!-- Sidebar Container -->
             <div class="
                 col-lg-8 col-lg-offset-2
                 col-md-10 col-md-offset-1
@@ -308,32 +325,75 @@
                     <!-- no hr -->
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
-                            
+                       
+                          <a class="tag" href="/tags/#javascript" title="javascript">javascript</a>
                         
                     </div>
                 </section>
                 
 
-
                 <!-- Friends Blog -->
                 
             </div>
-        
+        </div>
     </div>
-</div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "your-disqus-ID";
+    var disqus_identifier = "http://linyiwangteng.github.io/2018/12/11/getBoundingClientRect/";
+    var disqus_url = "http://linyiwangteng.github.io/2018/12/11/getBoundingClientRect/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
 
 
     <!-- Footer -->
